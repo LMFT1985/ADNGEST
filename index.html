@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ADNGEST</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://tile.openstreetmap.org" crossorigin>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+</head>
+<body>
+  <!-- LOGIN -->
+  <section id="loginPage" class="page login-page">
+    <div class="login-card">
+      <div class="brand">
+        <img class="brand-logo" src="logo.svg" alt="Águas do Norte" onerror="this.style.display='none'"/>
+        <div>
+          <div class="brand-title">ADNGEST</div>
+          <div class="brand-sub">Gestão de Caudalímetros e Data Logger´s</div>
+        </div>
+      </div>
+
+      <div id="loginError" class="alert hidden"></div>
+
+      <div class="field">
+        <label for="loginEmail">Email</label>
+        <input id="loginEmail" class="input" type="email" autocomplete="username" placeholder="email@exemplo.pt">
+      </div>
+
+      <div class="field">
+        <label for="loginPass">Password</label>
+        <div class="passrow">
+          <input id="loginPass" class="input" type="password" autocomplete="current-password" placeholder="••••••••">
+          <button class="eye" id="btnEyeLogin" type="button" data-eye="loginPass" aria-label="Mostrar/ocultar password">👁</button>
+        </div>
+      </div>
+
+      <button id="btnDoLogin" class="btn primary" type="button">Entrar</button>
+      <button id="btnForgot" class="btn" type="button">Recuperar password</button>
+
+      <div class="hint">Por Miguel Teixeira</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APP -->
+  <section id="appShell" class="app hidden">
+    <header class="topbar">
+      <a class="topbar-left" href="#" id="btnGoDashboard" title="Voltar à Dashboard">
+        <img class="top-logo" src="logo.svg" alt="Águas do Norte" onerror="this.style.display='none'"/>
+        <div>
+          <div class="top-title">ADNGEST</div>
+          <div class="top-sub">Gestão de Caudalímetros e Data Logger´s</div>
+        </div>
+      </a>
+
+      <div class="topbar-center">
+        <div class="pill" id="nowClock">—</div>
+        <div class="pill weather-pill">
+          <span id="weatherHeaderCity">Guimarães</span> •
+          <span id="weatherHeaderT">—</span> •
+          <span id="weatherHeaderP">—</span>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <div class="pill">Online: <b id="currentUser">—</b></div>
+        <a id="btnNOAA" class="btn small" href="https://www.noaa.gov/" target="_blank" rel="noopener">NOAA</a>
+        <div class="pill noaa-pill" title="Alerta importante (NOAA)" id="noaaAlert">—</div>
+        <button id="btnLogout" class="btn" type="button">Sair</button>
+      </div>
+    </header>
+
+    <div class="shell">
+      <aside class="sidebar">
+        <button class="navbtn active" data-tab="dashboard">Dashboard</button>
+        <button class="navbtn" data-tab="dataloggers">Data Logger´s</button>
+        <button class="navbtn" data-tab="caudalimetros">Caudalímetros</button>
+        <button class="navbtn" data-tab="historico">Histórico de Dados</button>
+        <button class="navbtn" data-tab="histutil">Histórico utilizadores</button>
+        <button class="navbtn" data-tab="utilizadores">Utilizadores</button>
+        <button class="navbtn" data-tab="config">Configurações</button>
+      </aside>
+
+      <main class="main">
+        <!-- DASHBOARD -->
+        <section class="card tab" id="tab-dashboard">
+          <div class="pagehead">
+            <h1>Dashboard</h1>
+            <div class="muted small">Mapa, KPIs, meteorologia e pesquisa rápida</div>
+          </div>
+
+          <div class="grid2">
+            <div class="panel">
+              <div class="panel-head">
+                <div>
+                  <div class="panel-title">Mapa</div>
+                  
+                </div>
+                <div class="panel-actions">
+                <div class="map-search" title="Pesquisar equipamento no mapa">
+                  <input class="input" id="mapSearch" placeholder="Pesquisar Data Logger / Caudalímetro" />
+                  <button class="btn" id="btnMapSearch" type="button" aria-label="Pesquisar">🔎</button>
+                </div>
+                <div id="mapFilters" class="map-filters" title="Filtrar equipamentos no mapa">
+                  <label class="mf"><input type="checkbox" id="fltDL" checked> Data Logger´s</label>
+                  <label class="mf"><input type="checkbox" id="fltC" checked> Caudalímetros</label>
+                </div>
+
+                  <button class="btn" id="btnLayers" type="button">Camadas</button>
+                  <button class="btn" id="btnMapFull" type="button">Ecrã completo</button>
+                  <button class="btn" id="btnFitAll" type="button">Ajustar</button>
+                  <!-- Google Earth removed per requirements -->
+                  <button class="btn" id="btnExportKML" type="button">Exportar KML</button>
+                </div>
+              </div>
+
+              <div id="layersPanel" class="layers hidden">
+                <div class="layers-title">Mapa base</div>
+                <div class="layers-row">
+                  <label><input type="radio" name="basemap" value="osm" checked> OSM</label>
+                  <label><input type="radio" name="basemap" value="sat"> Satélite (Esri)</label>
+                </div>
+              </div>
+
+              <div id="mapWrap" class="map-wrap">
+                <div id="map" class="map"></div>
+              </div>
+
+              <div class="legend">
+                <div><span class="dot g"></span> 0–50%</div>
+                <div><span class="dot y"></span> 50–80%</div>
+                <div><span class="dot o"></span> 80–90%</div>
+                <div><span class="dot r"></span> 90–100%</div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-head">
+                <div>
+                  <div class="panel-title">Meteorologia</div>
+                  <div class="muted small" id="weatherMeta">—</div>
+                </div>
+              </div>
+
+              <div class="weather-city">
+                <label class="muted small">Cidade:</label>
+                <input class="input" id="weatherCity" list="ptCities" placeholder="Guimarães" />
+                <datalist id="ptCities"></datalist>
+                <button class="btn" id="btnWeatherSet" type="button">Aplicar</button>
+              </div>
+
+              <div class="weather7" id="weather7"></div>
+              <div class="mini">
+                <div class="mini-title">Precipitação</div>
+                <div class="mini-row"><span>Horária (últ. 24h)</span><b id="p24">—</b></div>
+                <div class="mini-row"><span>Diária (hoje)</span><b id="ptoday">—</b></div>
+                <div class="mini-row"><span>Semanal (7d)</span><b id="p7">—</b></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid3">
+            <div class="kpi">
+              <div class="kpi-label">Data Logger´s</div>
+              <div class="kpi-value" id="kpiDL">—</div>
+              <div class="muted small" id="kpiDLFlow">Caudal inst. (médio): —</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Caudalímetros</div>
+              <div class="kpi-value" id="kpiC">—</div>
+              <div class="muted small" id="kpiCFlow">Caudal inst. (médio): —</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Sessão</div>
+              <div class="kpi-value" id="welcomeName">—</div>
+              <div class="muted small" id="welcomeTime">—</div>
+            </div>
+          </div>
+
+          <div class="grid2">
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title">Pesquisa rápida — Data Logger´s</div></div>
+              <input class="input" id="qDL" placeholder="Pesquisar por nome, município, rio..." />
+              <div id="quickDL" class="quicklist"></div>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title">Pesquisa rápida — Caudalímetros</div></div>
+              <input class="input" id="qC" placeholder="Pesquisar por nome, município, rio..." />
+              <div id="quickC" class="quicklist"></div>
+            </div>
+          
+
+          <div class="panel" style="margin-top:14px">
+            <div class="panel-head">
+              <div class="panel-title">Gráfico — equipamento selecionado</div>
+              <div class="muted small" id="dashSelLabel">Selecione um equipamento na pesquisa rápida ou no mapa</div>
+            </div>
+            <canvas id="dashChart" height="130"></canvas>
+            <div class="tablewrap" style="margin-top:10px">
+              <table class="table small">
+                <thead><tr><th></th><th>Mínimo</th><th>Máximo</th></tr></thead>
+                <tbody>
+                  <tr><td>Nível (%)</td><td id="dashLvlMin">—</td><td id="dashLvlMax">—</td></tr>
+                  <tr><td>Caudal (m³)</td><td id="dashFlowMin">—</td><td id="dashFlowMax">—</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="tablewrap" style="margin-top:10px">
+              <table class="table small" id="tblDashSeries">
+                <thead><tr><th>Timestamp</th><th>Nível (%)</th><th>Caudal (m³)</th></tr></thead>
+                <tbody><tr><td colspan="3" class="muted small">Selecione um equipamento para ver dados.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+
+</div>
+        </section>
+
+        <!-- DATA LOGGERS -->
+        <section class="card tab hidden" id="tab-dataloggers">
+          <div class="pagehead">
+            <h1>Data Logger´s</h1>
+            <div class="muted small" id="dlInstantFlow">Caudal inst. (médio): —</div>
+          </div>
+          <div class="toolbar">
+            <button class="btn" id="btnDLMap" type="button">Mapa</button>
+            <button class="btn" id="btnDLAdd" type="button">Adicionar</button>
+            <button class="btn" id="btnDLEdit" type="button">Editar</button>
+            <button class="btn" id="btnDLScada" type="button">Adicionar ao SCADA</button>
+</div>
+          <div class="tablewrap">
+            <table class="table" id="tblDL">
+              <thead>
+                <tr>
+                  <th>Nome</th><th>Município</th><th>Rio/Interceptor</th><th>Caixas de visita</th><th>Nível (%)</th><th>Caudal (m³)</th><th>Ativo</th><th>Ações</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+
+          </div>
+        </section>
+
+        <!-- CAUDALIMETROS -->
+        <section class="card tab hidden" id="tab-caudalimetros">
+          <div class="pagehead">
+            <h1>Caudalímetros</h1>
+            <div class="muted small" id="cInstantFlow">Caudal inst. (médio): —</div>
+          </div>
+          <div class="toolbar">
+            <button class="btn" id="btnCMap" type="button">Mapa</button>
+            <button class="btn" id="btnCAdd" type="button">Adicionar</button>
+            <button class="btn" id="btnCEdit" type="button">Editar</button>
+            <button class="btn" id="btnCScada" type="button">Adicionar ao SCADA</button>
+</div>
+          <div class="tablewrap">
+            <table class="table" id="tblC">
+              <thead>
+                <tr>
+                  <th>Nome</th><th>Município</th><th>Rio/Interceptor</th><th>Caixas de visita</th><th>Nível (%)</th><th>Caudal (m³)</th><th>Ativo</th><th>Ações</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+
+          </div>
+        </section>
+
+        <!-- HISTÓRICO DE DADOS -->
+        <section class="card tab hidden" id="tab-historico">
+          <div class="pagehead">
+            <h1>Histórico de Dados</h1>
+            <div class="muted small">Série temporal por equipamento • minuto/hora/dia/semana/mês/ano</div>
+          </div>
+
+          <div class="toolbar">
+            <select class="input" id="histKind">
+              <option value="datalogger">Data Logger´s</option>
+              <option value="caudal">Caudalímetros</option>
+              <option value="meteo">Meteorologia</option>
+            </select>
+            <select class="input" id="histDevice"></select>
+            <select class="input" id="histAgg">
+              <option value="minute" selected>Minutos</option>
+              <option value="hour">Horas</option>
+              <option value="day">Dias</option>
+              <option value="week">Semanas</option>
+              <option value="month">Meses</option>
+              <option value="year">Anos</option>
+            </select>
+            <select class="input" id="histRange">
+              <option value="60">Últimos 60 min</option>
+              <option value="360">Últimas 6 h</option>
+              <option value="1440" selected>Últimas 24 h</option>
+              <option value="10080">Últimos 7 dias</option>
+              <option value="43200">Últimos 30 dias</option>
+              <option value="525600">Último ano</option>
+              <option value="0">Desde o início</option>
+            </select>
+            <input class="input" id="histDate" type="date" title="Selecionar um dia específico" />
+            <button class="btn" id="btnHistRefresh" type="button">Atualizar</button>
+            <button class="btn" id="btnExportCSV" type="button">Exportar CSV</button>
+            <button class="btn" id="btnExportPDF" type="button">Exportar PDF</button>
+            <button class="btn" id="btnExportXLS" type="button">Exportar Excel</button>
+            <button class="btn danger" id="btnHistDelete" type="button">Eliminar</button>
+          </div>
+
+          <div class="panel">
+            <canvas id="histChart" height="180"></canvas>
+            <div class="muted small">Dica: para PDF, use “Imprimir” (o browser permite “Guardar como PDF”).</div>
+          </div>
+
+          <div class="tablewrap">
+            <table class="table" id="tblHist">
+              <thead><tr><th>Timestamp</th><th>Nível (%)</th><th>Caudal (m³)</th><th>Total Caudal (m³)</th><th>Precipitação (mm/h)</th><th>Total Precipitação (mm/h)</th><th></th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- HISTÓRICO UTILIZADORES -->
+        <section class="card tab hidden" id="tab-histutil">
+          <div class="pagehead">
+            <h1>Histórico Utilizadores</h1>
+            <div class="muted small">Entradas, saídas e ações</div>
+          </div>
+          <div class="toolbar">
+            <button class="btn" id="btnAuditExport" type="button">Exportar CSV</button>
+            <button class="btn danger" id="btnAuditClear" type="button">Eliminar tudo (Admin)</button>
+          </div>
+          <div class="tablewrap">
+            <table class="table" id="tblAudit">
+              <thead><tr><th>Data/Hora</th><th>Utilizador</th><th>Entrada/Saída</th><th>O que editou</th><th>Ações</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- UTILIZADORES -->
+        <section class="card tab hidden" id="tab-utilizadores">
+          <div class="pagehead">
+            <h1>Utilizadores</h1>
+            <div class="muted small">Adicionar, eliminar e permissões</div>
+          </div>
+
+          <div class="toolbar">
+            <button class="btn" id="btnUserAdd" type="button">Adicionar utilizador</button>
+          </div>
+
+          <div class="panel" style="margin: 10px 0 12px">
+            <div class="panel-head"><div class="panel-title">Online agora</div></div>
+            <div id="onlineUsers" class="onlineList"></div>
+          </div>
+
+          <div class="tablewrap">
+            <table class="table" id="tblUsers">
+              <thead><tr><th>Nome</th><th>Email</th><th>Telemóvel</th><th>Tipo</th><th>Ações</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- CONFIG -->
+        <section class="card tab hidden" id="tab-config">
+          <div class="pagehead">
+            <h1>Configurações</h1>
+            <div class="muted small">Listas mestre, alertas e integração SCADA</div>
+          </div>
+
+          <div class="grid2">
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title">Municípios</div></div>
+              <div class="toolbar">
+                <input class="input" id="newMunicipio" placeholder="Adicionar município..." />
+                <button class="btn" id="btnAddMunicipio" type="button">Adicionar</button>
+              </div>
+              <div id="listMunicipios" class="chips"></div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title">Rios / Interceptores</div></div>
+              <div class="toolbar">
+                <input class="input" id="newRio" placeholder="Adicionar rio/interceptor..." />
+                <button class="btn" id="btnAddRio" type="button">Adicionar</button>
+              </div>
+              <div id="listRios" class="chips"></div>
+            </div>
+          </div>
+
+          <div class="panel" style="margin-top:12px">
+            <div class="panel-head"><div class="panel-title">Alertas & Integração (pronto para servidor externo)</div></div>
+            <div class="grid2" style="grid-template-columns:1fr 1fr">
+              <div>
+                <div class="muted small">Limite alerta (nível %)</div>
+                <input class="input" id="cfgAlertLevel" type="number" min="0" max="100" />
+              </div>
+              <div>
+                <div class="muted small">Enviar alertas por</div>
+                <label class="chk"><input type="checkbox" id="cfgAlertEmail"> Email</label>
+                <label class="chk"><input type="checkbox" id="cfgAlertSMS"> SMS</label>
+              </div>
+            </div>
+            <div class="muted small" style="margin-top:8px">
+              Nota: O envio real de email/SMS requer ligação a um servidor/API externa. A app já está preparada (hooks).
+            </div>
+            <div class="toolbar">
+              <button class="btn" id="btnCfgSave" type="button">Guardar configurações</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- MODAL -->
+        <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+          <div class="modal-card">
+            <div class="modal-head">
+              <div class="modal-title" id="modalTitle">—</div>
+              <button class="btn" id="btnModalClose" type="button">Fechar</button>
+            </div>
+            <div id="modalBody" class="modal-body"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </section>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+  <script src="app.js"></script>
+
+  <dialog id="dlgRecover" class="dlg">
+    <div class="dlg-head">
+      <div class="dlg-title">Recuperar password</div>
+      <button class="btn" id="btnCloseRecover" type="button">Fechar</button>
+    </div>
+    <div class="dlg-body">
+      <div class="muted">Introduz o teu email. Será gerado um código de recuperação (simulado) para poderes definir uma nova password.</div>
+      <div class="toolbar" style="margin-top:12px">
+        <div style="flex:1">
+          <div class="muted small">Email</div>
+          <input class="input" id="recEmail" placeholder="ex.: nome@dominio.pt" />
+        </div>
+      </div>
+      <div class="toolbar" style="margin-top:10px">
+        <button class="btn primary" id="btnSendRecover" type="button">Gerar código</button>
+      </div>
+      <div id="recStep2" style="display:none;margin-top:14px">
+        <div class="pill" id="recCodePill">Código: <b id="recCode">000000</b></div>
+        <div class="muted small" style="margin-top:6px">Nota: nesta versão local, o envio por email é simulado. Numa integração futura, este código seguirá por email/SMS.</div>
+        <div class="toolbar" style="margin-top:12px">
+          <div style="flex:1">
+            <div class="muted small">Código</div>
+            <input class="input" id="recCodeIn" placeholder="6 dígitos" />
+          </div>
+          <div style="flex:1">
+            <div class="muted small">Nova password</div>
+            <input class="input" id="recNewPass" type="password" placeholder="Nova password" />
+          </div>
+        </div>
+        <div class="toolbar" style="margin-top:10px">
+          <button class="btn primary" id="btnApplyRecover" type="button">Alterar password</button>
+        </div>
+      </div>
+      <div id="recMsg" class="muted" style="margin-top:10px"></div>
+    </div>
+  </dialog>
+
+  <dialog id="dlgAlarm" class="dlg">
+    <div class="dlg-head">
+      <div class="dlg-title" id="alarmTitle">Alarme</div>
+      <button class="btn" id="btnCloseAlarm" type="button">Fechar</button>
+    </div>
+    <div class="dlg-body">
+      <div id="alarmBody"></div>
+    </div>
+  </dialog>
+</body>
+
+</html>
