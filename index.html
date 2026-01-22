@@ -1,0 +1,807 @@
+<!doctype html>
+<html lang="pt-PT">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ADNGEST</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://tile.openstreetmap.org" crossorigin>
+  <!-- Leaflet (correct versioned URLs). Fallback to jsDelivr if unpkg is blocked. -->
+  <link id="leafletCss" rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="" onerror="this.onerror=null;this.href='https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css';">
+</head>
+<body>
+  <!-- LOGIN -->
+  <section id="loginPage" class="page login-page">
+    <div class="login-card">
+      <div class="brand">
+        <img class="brand-logo" src="logo.svg" alt="Águas do Norte" onerror="this.style.display='none'"/>
+        <div>
+          <div class="brand-title">ADNGEST</div>
+          <div class="brand-sub">Gestão de Caudalímetros e Data Logger´s</div>
+        </div>
+      </div>
+
+      <div id="loginError" class="alert hidden"></div>
+
+      <div class="field">
+        <label for="loginEmail">Email</label>
+        <input id="loginEmail" class="input" type="email" autocomplete="username" placeholder="email@exemplo.pt">
+      </div>
+
+      <div class="field">
+        <label for="loginPass">Password</label>
+        <div class="passrow">
+          <input id="loginPass" class="input" type="password" autocomplete="current-password" placeholder="••••••••">
+          <button class="eye" id="btnEyeLogin" type="button" data-eye="loginPass" aria-label="Mostrar/ocultar password">👁</button>
+        </div>
+      </div>
+
+      <button id="btnDoLogin" class="btn primary" type="button">Entrar</button>
+      <button id="btnForgot" class="btn" type="button">Recuperar password</button>
+
+      <div class="hint">Por Miguel Teixeira</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- APP -->
+  <section id="appShell" class="app hidden">
+    <header class="topbar">
+      <a class="topbar-left" href="#" id="btnGoDashboard" title="Voltar à Dashboard">
+        <img class="top-logo" src="logo.svg" alt="Águas do Norte" onerror="this.style.display='none'"/>
+        <div>
+          <div class="top-title">ADNGEST</div>
+          <div class="top-sub">Gestão de Caudalímetros e Data Logger´s</div>
+        </div>
+      </a>
+
+      <div class="topbar-center">
+        <div class="pill" id="nowClock">—</div>
+        <div class="pill weather-pill">
+          <span id="weatherHeaderCity">Guimarães</span> •
+          <span id="weatherHeaderT">—</span> •
+          <span id="weatherHeaderP">—</span>
+        </div>
+      </div>
+
+      <div class="topbar-right">
+        <div class="pill">Online: <b id="currentUser">—</b></div>
+        <a id="btnNOAA" class="btn small" href="https://www.noaa.gov/" target="_blank" rel="noopener">NOAA</a>
+        <div class="pill noaa-pill" title="Alerta importante (NOAA)" id="noaaAlert">—</div>
+        <button id="btnLogout" class="btn" type="button">Sair</button>
+      </div>
+    </header>
+
+    <div class="shell">
+      <aside class="sidebar">
+        <button class="navbtn active" data-tab="dashboard">Dashboard</button>
+        <button class="navbtn" data-tab="dataloggers">Data Logger´s</button>
+        <button class="navbtn" data-tab="caudalimetros">Caudalímetros</button>
+        <button class="navbtn" data-tab="historico">Histórico de Dados</button>
+        <button class="navbtn" data-tab="histutil">Histórico utilizadores</button>
+        <button class="navbtn" data-tab="utilizadores">Utilizadores</button>
+        <button class="navbtn" data-tab="config">Configurações</button>
+        <button class="navbtn" data-tab="ferramentas">Ferramentas</button>
+      </aside>
+
+      <main class="main">
+        <!-- DASHBOARD -->
+        <section class="card tab" id="tab-dashboard">
+          <div class="pagehead">
+            <div>
+              <h1>Dashboard</h1>
+              <div class="muted small">Mapa, KPIs, meteorologia e pesquisa rápida</div>
+            </div>
+            <div class="pagehead-actions">
+              <button class="btn" id="btnCompactTop" type="button">Modo Mobile</button>
+            </div>
+          </div>
+
+          <!-- Dashboard split: mapa à esquerda + meteorologia à direita (lado a lado) -->
+          <div class="dash-split" id="dashSplit">
+            <div class="panel tool-card">
+              <div class="panel-head">
+                <div>
+                  <div class="panel-title">Mapa</div>
+                  
+                </div>
+                <div class="panel-actions">
+                  <!-- Pesquisa + filtros acima dos botões, centrados dentro das margens do mapa -->
+                  <div class="map-searchrow">
+                    <div class="map-search" title="Pesquisar equipamento no mapa">
+                      <input class="input" id="mapSearch" placeholder="Pesquisar Data Logger / Caudalímetro" />
+                      <button class="btn" id="btnMapSearch" type="button" aria-label="Pesquisar">🔎</button>
+                    </div>
+                    <div id="mapFilters" class="map-filters" title="Filtrar equipamentos no mapa">
+                      <label class="mf"><input type="checkbox" id="fltDL" checked> Data Logger´s</label>
+                      <label class="mf"><input type="checkbox" id="fltC" checked> Caudalímetros</label>
+                    </div>
+                  </div>
+
+                  <!-- Botões do mapa (todos em linha, compactos) -->
+                  <div class="map-tools" aria-label="Ferramentas do mapa">
+                    <button class="btn btn-sm" id="btnMapHeat" type="button">Heatmap</button>
+                    <button class="btn btn-sm" id="btnMapRadar" type="button">Radar de chuva</button>
+                    <button class="btn btn-sm" id="btnLayers" type="button">Camadas</button>
+                    <button class="btn btn-sm" id="btnMapExportGeoJSON" type="button">Exportar GeoJSON</button>
+                    <button class="btn btn-sm" id="btnFitAll" type="button">Ajustar</button>
+                    <button class="btn btn-sm" id="btnMapFull" type="button">Ecrã completo</button>
+                    <button class="btn btn-sm" id="btnExportKML" type="button">Exportar KML</button>
+                  </div>
+                </div>
+              </div>
+
+              <div id="layersPanel" class="layers hidden">
+                <div class="layers-title">Mapa base</div>
+                <div class="layers-row">
+                  <label><input type="radio" name="basemap" value="osm" checked> OSM</label>
+                  <label><input type="radio" name="basemap" value="sat"> Satélite (Esri)</label>
+                </div>
+              </div>
+
+              <div id="mapWrap" class="map-wrap">
+                <div id="map" class="map"><iframe title="Mapa" src="https://www.openstreetmap.org/export/embed.html?bbox=-8.5462%2C41.2644%2C-8.0462%2C41.6244&layer=mapnik" loading="lazy" referrerpolicy="no-referrer-when-downgrade" style="border:0;width:100%;height:100%;"></iframe></div>
+              </div>
+
+              <div class="legend">
+                <div><span class="dot g"></span> 0–50%</div>
+                <div><span class="dot y"></span> 50–80%</div>
+                <div><span class="dot o"></span> 80–90%</div>
+                <div><span class="dot r"></span> 90–100%</div>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-head">
+                <div>
+                  <div class="panel-title">Meteorologia</div>
+                  <div class="muted small" id="weatherMeta">—</div>
+                </div>
+              </div>
+
+              <div class="weather-city">
+                <label class="muted small">Cidade:</label>
+                <input class="input" id="weatherCity" list="ptCities" placeholder="Guimarães" />
+                <datalist id="ptCities"></datalist>
+                <button class="btn" id="btnWeatherSet" type="button">Aplicar</button>
+              </div>
+
+              <div class="weather7" id="weather7"></div>
+              <div class="mini">
+                <div class="mini-title">Precipitação</div>
+                <div class="mini-row"><span>Horária (últ. 24h)</span><b id="p24">—</b></div>
+                <div class="mini-row"><span>Diária (hoje)</span><b id="ptoday">—</b></div>
+                <div class="mini-row"><span>Semanal (7d)</span><b id="p7">—</b></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Gráfico do equipamento selecionado (mais acima, consistente com Histórico de Dados) -->
+          <div class="panel dash-panel" style="margin-top:14px">
+            <div class="panel-head">
+              <div>
+                <div class="panel-title">Gráfico — equipamento selecionado</div>
+                <div class="muted small" id="dashSelLabel">Selecione um equipamento na pesquisa rápida ou no mapa</div>
+              </div>
+              <div>
+                <button class="btn" id="btnDashRefresh" type="button">Atualizar</button>
+              </div>
+            </div>
+            <canvas id="dashChart" height="170"></canvas><div id='dashChartLegend' class='dash-chart-legend'></div>
+            <div class="tablewrap dash-minmax" style="margin-top:10px">
+              <table class="table small">
+                <thead><tr><th></th><th>Mínimo</th><th>Máximo</th></tr></thead>
+                <tbody>
+                  <tr><td>Nível (%)</td><td id="dashLvlMin">—</td><td id="dashLvlMax">—</td></tr>
+                  <tr><td>Caudal (m³)</td><td id="dashFlowMin">—</td><td id="dashFlowMax">—</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="tablewrap dash-series" style="margin-top:10px">
+              <table class="table small" id="tblDashSeries">
+                <thead><tr><th>Timestamp</th><th>Nível (%)</th><th>Caudal (m³)</th></tr></thead>
+                <tbody><tr><td colspan="3" class="muted small">Selecione um equipamento para ver dados.</td></tr></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="grid3">
+            <div class="kpi">
+              <div class="kpi-label">Data Logger´s</div>
+              <div class="kpi-value" id="kpiDL">—</div>
+              <div class="muted small" id="kpiDLFlow">Caudal inst. (médio): —</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Caudalímetros</div>
+              <div class="kpi-value" id="kpiC">—</div>
+              <div class="muted small" id="kpiCFlow">Caudal inst. (médio): —</div>
+            </div>
+            <div class="kpi">
+              <div class="kpi-label">Sessão</div>
+              <div class="kpi-value" id="welcomeName">—</div>
+              <div class="muted small" id="welcomeTime">—</div>
+            </div>
+          </div>
+
+          <div class="grid2 quick-grid">
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title">Pesquisa rápida — Data Logger´s</div></div>
+              <input class="input" id="qDL" placeholder="Pesquisar por nome, município, rio..." />
+              <div id="quickDL" class="quicklist"></div>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title">Pesquisa rápida — Caudalímetros</div></div>
+              <input class="input" id="qC" placeholder="Pesquisar por nome, município, rio..." />
+              <div id="quickC" class="quicklist"></div>
+            </div>
+
+          </div>
+        </section>
+
+        <!-- DATA LOGGERS -->
+        <section class="card tab hidden" id="tab-dataloggers">
+          <div class="pagehead">
+            <h1>Data Logger´s</h1>
+            <div class="muted small" id="dlInstantFlow">Caudal inst. (médio): —</div>
+          </div>
+          <div class="toolbar">
+            <button class="btn" id="btnDLMap" type="button">Mapa</button>
+            <button class="btn" id="btnDLAdd" type="button">Adicionar</button>
+            <button class="btn" id="btnDLEdit" type="button">Editar</button>
+            <button class="btn adminOnly" id="btnDLScada" class="btn adminOnly" type="button">Ligação remota</button>
+</div>
+          <div class="tablewrap">
+            <table class="table" id="tblDL">
+              <thead>
+                <tr>
+                  <th>Nome</th><th>Município</th><th>Rio/Interceptor</th><th>Caixas de visita</th><th>Nível (%)</th><th>Caudal (m³)</th><th>Ativo</th><th>Ações</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+
+          </div>
+        </section>
+
+        <!-- CAUDALIMETROS -->
+        <section class="card tab hidden" id="tab-caudalimetros">
+          <div class="pagehead">
+            <h1>Caudalímetros</h1>
+            <div class="muted small" id="cInstantFlow">Caudal inst. (médio): —</div>
+          </div>
+          <div class="toolbar">
+            <button class="btn" id="btnCMap" type="button">Mapa</button>
+            <button class="btn" id="btnCAdd" type="button">Adicionar</button>
+            <button class="btn" id="btnCEdit" type="button">Editar</button>
+            <button class="btn adminOnly" id="btnCScada" class="btn adminOnly" type="button">Ligação remota</button>
+</div>
+          <div class="tablewrap">
+            <table class="table" id="tblC">
+              <thead>
+                <tr>
+                  <th>Nome</th><th>Município</th><th>Rio/Interceptor</th><th>Caixas de visita</th><th>Nível (%)</th><th>Caudal (m³)</th><th>Ativo</th><th>Ações</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+
+          </div>
+        </section>
+
+        <!-- HISTÓRICO DE DADOS -->
+        <section class="card tab hidden" id="tab-historico">
+          <div class="pagehead">
+            <h1>Histórico de Dados</h1>
+            <div class="muted small">Série temporal por equipamento • minuto/hora/dia/semana/mês/ano</div>
+          </div>
+
+          <div class="toolbar">
+            <select class="input" id="histKind">
+              <option value="datalogger">Data Logger´s</option>
+              <option value="caudal">Caudalímetros</option>
+              <option value="meteo">Meteorologia</option>
+            </select>
+            <select class="input" id="histDevice"></select>
+            <select class="input" id="histAgg">
+              <option value="minute" selected>Minutos</option>
+              <option value="hour">Horas</option>
+              <option value="day">Dias</option>
+              <option value="week">Semanas</option>
+              <option value="month">Meses</option>
+              <option value="year">Anos</option>
+            </select>
+            <select class="input" id="histRange">
+              <option value="60">Últimos 60 min</option>
+              <option value="360">Últimas 6 h</option>
+              <option value="1440" selected>Últimas 24 h</option>
+              <option value="10080">Últimos 7 dias</option>
+              <option value="43200">Últimos 30 dias</option>
+              <option value="525600">Último ano</option>
+              <option value="0">Desde o início</option>
+            </select>
+            <input class="input" id="histDate" type="date" title="Selecionar um dia específico" />
+            <button class="btn" id="btnHistRefresh" type="button">Atualizar</button>
+            <button class="btn" id="btnExportCSV" type="button">Exportar CSV</button>
+            <button class="btn" id="btnExportPDF" type="button">Exportar PDF</button>
+            <button class="btn" id="btnExportXLS" type="button">Exportar Excel</button>
+            <select class="input adminOnly" id="histDelScope" title="Eliminar por período">
+              <option value="day">Eliminar dia</option>
+              <option value="week">Eliminar semana</option>
+              <option value="month">Eliminar mês</option>
+              <option value="year">Eliminar ano</option>
+              <option value="always">Eliminar sempre</option>
+            </select>
+            <button class="btn danger adminOnly" id="btnHistDeleteScope" type="button" title="Elimina o período do dia selecionado (ou hoje)">Eliminar período</button>
+            <button class="btn danger" id="btnHistDelete" type="button">Eliminar</button>
+          </div>
+
+          <div class="panel">
+            <canvas id="histChart" height="180"></canvas>
+            <div class="muted small">Dica: para PDF, use “Imprimir” (o browser permite “Guardar como PDF”).</div>
+          </div>
+
+          <div class="tablewrap">
+            <table class="table" id="tblHist">
+              <thead><tr><th>Timestamp</th><th>Nível (%)</th><th>Caudal (m³)</th><th>Total Caudal (m³)</th><th>Precipitação (mm/h)</th><th>Total Precipitação (mm/h)</th><th></th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- HISTÓRICO UTILIZADORES -->
+        <section class="card tab hidden" id="tab-histutil">
+          <div class="pagehead">
+            <h1>Histórico Utilizadores</h1>
+            <div class="muted small">Entradas, saídas e ações</div>
+          </div>
+          <div class="toolbar">
+            <button class="btn" id="btnAuditExport" type="button">Exportar CSV</button>
+            <button class="btn danger" id="btnAuditClear" type="button">Eliminar tudo (Admin)</button>
+          </div>
+          <div class="tablewrap">
+            <table class="table" id="tblAudit">
+              <thead><tr><th>Data/Hora</th><th>Utilizador</th><th>Entrada/Saída</th><th>O que editou</th><th>Ações</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- UTILIZADORES -->
+        <section class="card tab hidden" id="tab-utilizadores">
+          <div class="pagehead">
+            <h1>Utilizadores</h1>
+            <div class="muted small">Adicionar, eliminar e permissões</div>
+          </div>
+
+          <div class="toolbar">
+            <button class="btn" id="btnUserAdd" type="button">Adicionar utilizador</button>
+          </div>
+
+          <div class="panel" style="margin: 10px 0 12px">
+            <div class="panel-head"><div class="panel-title">Online agora</div></div>
+            <div id="onlineUsers" class="onlineList"></div>
+          </div>
+
+          <div class="tablewrap">
+            <table class="table" id="tblUsers">
+              <thead><tr><th>Nome</th><th>Email</th><th>Telemóvel</th><th>Tipo</th><th>Ações</th></tr></thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- CONFIG -->
+        <section class="card tab hidden" id="tab-config">
+          <div class="pagehead">
+            <h1>Configurações</h1>
+            <div class="muted small">Listas mestre, alertas e integração SCADA</div>
+          </div>
+
+          <!-- Dashboard split: mapa à esquerda + meteorologia à direita (lado a lado) -->
+          <div class="dash-split" id="dashSplit">
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title">Municípios</div></div>
+              <div class="toolbar">
+                <input class="input" id="newMunicipio" placeholder="Adicionar município..." />
+                <button class="btn" id="btnAddMunicipio" type="button">Adicionar</button>
+              </div>
+              <div id="listMunicipios" class="chips"></div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-head"><div class="panel-title">Rios / Interceptores</div></div>
+              <div class="toolbar">
+                <input class="input" id="newRio" placeholder="Adicionar rio/interceptor..." />
+                <button class="btn" id="btnAddRio" type="button">Adicionar</button>
+              </div>
+              <div id="listRios" class="chips"></div>
+            </div>
+          </div>
+
+          <div class="panel" style="margin-top:12px">
+            <div class="panel-head"><div class="panel-title">Alertas & Integração (pronto para servidor externo)</div></div>
+            <div class="grid2" style="grid-template-columns:1fr 1fr">
+              <div>
+                <div class="muted small">Alertar quando (nível %)</div>
+                <div class="toolbar" style="gap:10px;align-items:center">
+                  <label class="chk"><input type="checkbox" id="cfgAlertLevelOn"> Ativo</label>
+                  <input class="input" id="cfgAlertLevel" type="number" min="0" max="100" style="max-width:120px" />
+                </div>
+              </div>
+              <div>
+                <div class="muted small">Alertar quando (caudal m³)</div>
+                <div class="toolbar" style="gap:10px;align-items:center">
+                  <label class="chk"><input type="checkbox" id="cfgAlertFlowOn"> Ativo</label>
+                  <input class="input" id="cfgAlertFlow" type="number" min="0" step="0.1" style="max-width:120px" />
+                </div>
+              </div>
+            </div>
+
+            <div class="grid2" style="grid-template-columns:1fr 1fr; margin-top:10px">
+              <div>
+                <div class="muted small">📧 Email (destino)</div>
+                <label class="chk"><input type="checkbox" id="cfgAlertEmail"> Ativar envio por email</label>
+                <input class="input" id="cfgAlertEmailTo" placeholder="ex.: alertas@dominio.pt" style="margin-top:6px" />
+              </div>
+              <div>
+                <div class="muted small">📱 Telemóvel (destino)</div>
+                <label class="chk"><input type="checkbox" id="cfgAlertSMS"> Ativar envio para telemóvel</label>
+                <input class="input" id="cfgAlertSMSTo" placeholder="ex.: 9XXXXXXXX" style="margin-top:6px" />
+              </div>
+            </div>
+
+            <div class="panel" style="margin-top:10px; padding:10px; border:1px dashed #3a3a3a">
+              <div class="muted small" style="margin-bottom:6px">🔌 Servidor externo (SCADA/API)</div>
+              <label class="chk"><input type="checkbox" id="cfgExtOn"> Ativar integração com servidor externo</label>
+              <div class="grid2" style="grid-template-columns:1fr 180px; margin-top:8px">
+                <div>
+                  <div class="muted small">URL</div>
+                  <input class="input" id="cfgExtUrl" placeholder="ex.: https://servidor/api/alertas" />
+                </div>
+                <div>
+                  <div class="muted small">Método</div>
+                  <select class="input" id="cfgExtMethod">
+                    <option value="POST">POST</option>
+                    <option value="GET">GET</option>
+                  </select>
+                </div>
+              </div>
+              <div style="margin-top:8px">
+                <div class="muted small">Token (opcional)</div>
+                <input class="input" id="cfgExtToken" placeholder="Bearer/Token..." />
+              </div>
+              <div class="muted small" style="margin-top:8px">
+                Nota: o envio real de email/SMS deve ser feito por um servidor/API externa. A app envia um JSON com o alerta (inclui email/telemóvel configurados).
+              </div>
+            </div>
+
+            
+            <div class="hr"></div>
+            <div class="muted small" style="margin-top:10px"><b>Base de dados (Supabase)</b> — opcional. Se preencher, a app pode ler/gravar dispositivos e histórico via Supabase (Postgres).</div>
+            <div class="grid2" style="margin-top:8px">
+              <div>
+                <div class="muted small">Supabase URL</div>
+                <input class="input" id="cfgSupabaseUrl" placeholder="https://xxxx.supabase.co" />
+              </div>
+              <div>
+                <div class="muted small">Supabase Anon Key</div>
+                <input class="input" id="cfgSupabaseAnon" placeholder="eyJhbGciOi..." />
+              </div>
+            </div>
+            <div class="grid2" style="margin-top:8px">
+              <div>
+                <div class="muted small">Tabela devices</div>
+                <input class="input" id="cfgSbTableDevices" value="devices" />
+              </div>
+              <div>
+                <div class="muted small">Tabela telemetry</div>
+                <input class="input" id="cfgSbTableTelemetry" value="telemetry" />
+              </div>
+            </div>
+
+            <div class="hr"></div>
+            <div class="muted small" style="margin-top:10px"><b>Gateway / Collector</b> (para KROHNE Modbus e SOFREL WEB LS). A app chama este servidor (HTTP) para puxar dados.</div>
+            <div class="grid2" style="margin-top:8px">
+              <div>
+                <div class="muted small">Collector Base URL</div>
+                <input class="input" id="cfgCollectorUrl" placeholder="https://meu-gateway.exemplo/api" />
+              </div>
+              <div>
+                <div class="muted small">Collector Token (opcional)</div>
+                <input class="input" id="cfgCollectorToken" placeholder="Bearer ..." />
+              </div>
+            </div>
+            <div class="toolbar" style="justify-content:flex-end; margin-top:10px">
+              <button class="btn" id="btnCfgTestSupabase" type="button">Testar Supabase</button>
+              <button class="btn" id="btnCfgTestCollector" type="button">Testar Collector</button>
+            </div>
+<div class="toolbar">
+              <button class="btn" id="btnCfgSave" type="button">Guardar configurações</button>
+              <button class="btn" id="btnCfgTestAlert" type="button">Testar alerta</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- FERRAMENTAS -->
+        <section class="card tab hidden" id="tab-ferramentas">
+          <div class="pagehead">
+            <h1>Ferramentas</h1>
+            <div class="muted small">Alertas, exportação, comparação, tendências, permissões, integrações e análises</div>
+          </div>
+
+          <!-- Ferramentas organizadas numa única página (grid compacto) -->
+          <div class="tools-grid">
+            <div class="panel tool-card">
+              <div class="panel-head">
+                <div>
+                  <div class="panel-title">Alertas (nível/caudal/chuva)</div>
+                  <div class="muted small">Crie regras e receba avisos no topo. Opcional: webhook externo.</div>
+                </div>
+                <div class="panel-actions">
+                  <button class="btn" id="btnAlertsRefresh" type="button">Atualizar</button>
+                </div>
+              </div>
+              <div class="grid2" style="grid-template-columns:1fr 1fr; gap:10px">
+                <div>
+                  <div class="muted small">Equipamento</div>
+                  <select class="input" id="alertDevice"></select>
+                </div>
+                <div>
+                  <div class="muted small">Tipo</div>
+                  <select class="input" id="alertType">
+                    <option value="level">Nível (%)</option>
+                    <option value="flow">Caudal (m³)</option>
+                    <option value="rain">Chuva (mm/h)</option>
+                  </select>
+                </div>
+              </div>
+              <div class="grid2" style="grid-template-columns:1fr 1fr; gap:10px; margin-top:8px">
+                <div>
+                  <div class="muted small">Condição</div>
+                  <select class="input" id="alertOp">
+                    <option value=">=">≥</option>
+                    <option value=">">&gt;</option>
+                    <option value="<=">≤</option>
+                    <option value="<">&lt;</option>
+                  </select>
+                </div>
+                <div>
+                  <div class="muted small">Valor</div>
+                  <input class="input" id="alertValue" type="number" min="0" step="0.1" placeholder="ex.: 85" />
+                </div>
+              </div>
+              <div class="toolbar" style="margin-top:10px">
+                <button class="btn primary" id="btnAlertAdd" type="button">Criar regra</button>
+                <button class="btn" id="btnAlertTest" type="button">Testar</button>
+              </div>
+              <div class="tablewrap tool-table" style="margin-top:10px">
+                <table class="table small" id="tblAlerts">
+                  <thead><tr><th>Equipamento</th><th>Tipo</th><th>Condição</th><th>Valor</th><th></th></tr></thead>
+                  <tbody><tr><td colspan="5" class="muted small">—</td></tr></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="panel tool-card">
+              <div class="panel-head">
+                <div>
+                  <div class="panel-title">Exportação (CSV)</div>
+                  <div class="muted small">Exporta o período selecionado do Histórico (nível/caudal).</div>
+                </div>
+              </div>
+              <div class="grid2" style="grid-template-columns:1fr 1fr; gap:10px">
+                <div>
+                  <div class="muted small">Equipamento</div>
+                  <select class="input" id="expDevice"></select>
+                </div>
+                <div>
+                  <div class="muted small">Período</div>
+                  <select class="input" id="expRange">
+                    <option value="day">Dia</option>
+                    <option value="week">Semana</option>
+                    <option value="month">Mês</option>
+                    <option value="year" selected>Ano</option>
+                    <option value="all">Sempre</option>
+                  </select>
+                </div>
+              </div>
+              <div class="toolbar" style="margin-top:10px">
+                <button class="btn primary" id="btnExportCsv" type="button">Exportar CSV</button>
+              </div>
+
+              <div class="hr"></div>
+              <div class="panel-head">
+                <div>
+                  <div class="panel-title">3) Comparação (2 equipamentos)</div>
+                  <div class="muted small">Sobrepõe séries para comparação.</div>
+                </div>
+              </div>
+              <div class="grid2" style="grid-template-columns:1fr 1fr; gap:10px">
+                <div>
+                  <div class="muted small">Equipamento A</div>
+                  <select class="input" id="cmpA"></select>
+                </div>
+                <div>
+                  <div class="muted small">Equipamento B</div>
+                  <select class="input" id="cmpB"></select>
+                </div>
+              </div>
+              <div class="toolbar" style="margin-top:10px">
+                <button class="btn" id="btnCompare" type="button">Comparar</button>
+              </div>
+              <canvas id="cmpChart" height="160"></canvas>
+              <div id="cmpLegend" class="dash-chart-legend"></div>
+            </div>
+
+            <div class="panel tool-card">
+              <div class="panel-head">
+                <div>
+                  <div class="panel-title">Tendências e previsão simples</div>
+                  <div class="muted small">Média móvel e projeção baseada em tendência recente.</div>
+                </div>
+              </div>
+              <div class="grid2" style="grid-template-columns:1fr 1fr; gap:10px">
+                <div>
+                  <div class="muted small">Equipamento</div>
+                  <select class="input" id="trendDevice"></select>
+                </div>
+                <div>
+                  <div class="muted small">Janela (horas)</div>
+                  <input class="input" id="trendWindow" type="number" min="3" step="1" value="24" />
+                </div>
+              </div>
+              <div class="toolbar" style="margin-top:10px">
+                <button class="btn" id="btnTrend" type="button">Gerar</button>
+              </div>
+              <canvas id="trendChart" height="160"></canvas>
+              <div id="trendLegend" class="dash-chart-legend"></div>
+            </div>
+
+            <div class="panel tool-card">
+              <div class="panel-head">
+                <div>
+                  <div class="panel-title">Permissões (roles)</div>
+                  <div class="muted small">Admin/Operador/Leitor (bloqueia apagamentos para não-admin).</div>
+                </div>
+              </div>
+              <div class="grid2" style="grid-template-columns:1fr 1fr; gap:10px">
+                <div>
+                  <div class="muted small">Utilizador (email)</div>
+                  <input class="input" id="roleEmail" placeholder="user@dominio.pt" />
+                </div>
+                <div>
+                  <div class="muted small">Role</div>
+                  <select class="input" id="roleValue">
+                    <option value="admin">Admin</option>
+                    <option value="operator">Operador</option>
+                    <option value="viewer">Leitor</option>
+                  </select>
+                </div>
+              </div>
+              <div class="toolbar" style="margin-top:10px">
+                <button class="btn" id="btnRoleSave" type="button">Guardar</button>
+                <button class="btn" id="btnRoleRefresh" type="button">Atualizar</button>
+              </div>
+              <div class="tablewrap tool-table" style="margin-top:10px">
+                <table class="table small" id="tblRoles">
+                  <thead><tr><th>Email</th><th>Role</th><th></th></tr></thead>
+                  <tbody><tr><td colspan="3" class="muted small">—</td></tr></tbody>
+                </table>
+              </div>
+            </div>
+
+            <div class="panel">
+              <div class="panel-head">
+                <div>
+                  <div class="panel-title">Integrações (API)</div>
+                  <div class="muted small">Gera chave para ingestão externa (documentação simples).</div>
+                </div>
+              </div>
+              <div class="toolbar">
+                <button class="btn" id="btnApiKeyNew" type="button">Gerar API Key</button>
+                <button class="btn" id="btnApiKeyRefresh" type="button">Atualizar</button>
+              </div>
+              <div class="tablewrap tool-table" style="margin-top:10px">
+                <table class="table small" id="tblApiKeys">
+                  <thead><tr><th>Chave</th><th>Criada em</th><th></th></tr></thead>
+                  <tbody><tr><td colspan="3" class="muted small">—</td></tr></tbody>
+                </table>
+              </div>
+              <div class="muted small" style="margin-top:8px">
+                Endpoint sugerido (via Supabase Edge Function ou gateway): <code>POST /ingest</code> com JSON { device_id, ts, level, flow } e header <code>X-API-Key</code>.
+              </div>
+            </div>
+
+            <div class="panel tool-card">
+              <div class="panel-head">
+                <div>
+                  <div class="panel-title">Análises (anomalias & correlação chuva×caudal)</div>
+                  <div class="muted small">Deteção simples por z-score e correlação com precipitação.</div>
+                </div>
+              </div>
+              <div class="grid2" style="grid-template-columns:1fr 1fr; gap:10px">
+                <div>
+                  <div class="muted small">Equipamento</div>
+                  <select class="input" id="anaDevice"></select>
+                </div>
+                <div>
+                  <div class="muted small">Sensibilidade (z)</div>
+                  <input class="input" id="anaZ" type="number" min="2" step="0.5" value="3" />
+                </div>
+              </div>
+              <div class="toolbar" style="margin-top:10px">
+                <button class="btn" id="btnAnalyze" type="button">Analisar</button>
+              </div>
+              <div id="anaOut" class="muted small" style="margin-top:8px">—</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- MODAL -->
+        <div id="modal" class="modal hidden" role="dialog" aria-modal="true">
+          <div class="modal-card">
+            <div class="modal-head">
+              <div class="modal-title" id="modalTitle">—</div>
+              <button class="btn" id="btnModalClose" type="button">Fechar</button>
+            </div>
+            <div id="modalBody" class="modal-body"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </section>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="" onerror="(function(){var s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js';document.head.appendChild(s);}())"></script>
+  <script src="app.js"></script>
+
+  <dialog id="dlgRecover" class="dlg">
+    <div class="dlg-head">
+      <div class="dlg-title">Recuperar password</div>
+      <button class="btn" id="btnCloseRecover" type="button">Fechar</button>
+    </div>
+    <div class="dlg-body">
+      <div class="muted">Introduz o teu email. Será gerado um código de recuperação (simulado) para poderes definir uma nova password.</div>
+      <div class="toolbar" style="margin-top:12px">
+        <div style="flex:1">
+          <div class="muted small">Email</div>
+          <input class="input" id="recEmail" placeholder="ex.: nome@dominio.pt" />
+        </div>
+      </div>
+      <div class="toolbar" style="margin-top:10px">
+        <button class="btn primary" id="btnSendRecover" type="button">Gerar código</button>
+      </div>
+      <div id="recStep2" style="display:none;margin-top:14px">
+        <div class="pill" id="recCodePill">Código: <b id="recCode">000000</b></div>
+        <div class="muted small" style="margin-top:6px">Nota: nesta versão local, o envio por email é simulado. Numa integração futura, este código seguirá por email/SMS.</div>
+        <div class="toolbar" style="margin-top:12px">
+          <div style="flex:1">
+            <div class="muted small">Código</div>
+            <input class="input" id="recCodeIn" placeholder="6 dígitos" />
+          </div>
+          <div style="flex:1">
+            <div class="muted small">Nova password</div>
+            <input class="input" id="recNewPass" type="password" placeholder="Nova password" />
+          </div>
+        </div>
+        <div class="toolbar" style="margin-top:10px">
+          <button class="btn primary" id="btnApplyRecover" type="button">Alterar password</button>
+        </div>
+      </div>
+      <div id="recMsg" class="muted" style="margin-top:10px"></div>
+    </div>
+  </dialog>
+
+  <dialog id="dlgAlarm" class="dlg">
+    <div class="dlg-head">
+      <div class="dlg-title" id="alarmTitle">Alarme</div>
+      <button class="btn" id="btnCloseAlarm" type="button">Fechar</button>
+    </div>
+    <div class="dlg-body">
+      <div id="alarmBody"></div>
+    </div>
+  </dialog>
+
+  <footer class="app-footer">© 2026 – M.T®</footer>
+</body>
+
+</html>

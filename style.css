@@ -1,0 +1,1151 @@
+
+:root{
+  --bg:#f3f6fb;
+  --card:#ffffff;
+  --text:#0f172a;
+  --muted:rgba(15,23,42,.62);
+  --border:rgba(2,6,23,.10);
+  --primary:#2563eb;
+  --danger:#dc2626;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%; padding-bottom:34px}
+body{
+  margin:0;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+  color:var(--text);
+  background:
+    radial-gradient(1200px 700px at 20% 10%, rgba(37,99,235,.10), transparent 55%),
+    radial-gradient(900px 600px at 80% 20%, rgba(16,185,129,.10), transparent 55%),
+    var(--bg);
+}
+
+.hidden{display:none !important}
+.muted{color:var(--muted)}
+.small{font-size:12px; font-weight:800}
+
+/* Login */
+.page{min-height:100%; display:flex; align-items:center; justify-content:center; padding:24px}
+.login-card{
+  width:min(460px, 94vw);
+  background:rgba(255,255,255,.92);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:22px;
+  box-shadow: 0 22px 60px rgba(2,6,23,.12);
+  backdrop-filter: blur(6px);
+}
+.brand{display:flex; gap:14px; align-items:center; margin-bottom:14px}
+.brand-logo{width:56px;height:56px;object-fit:contain; border-radius:16px; border:1px solid var(--border); background:rgba(255,255,255,.75); padding:6px}
+.brand-title{font-size:34px; font-weight:950; line-height:1}
+.brand-sub{font-weight:900; color:var(--muted); margin-top:6px}
+.field{margin-top:12px}
+label{display:block; font-size:12px; font-weight:900; color:rgba(15,23,42,.78); margin-bottom:6px}
+.input{
+  width:100%;
+  padding:12px 12px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:#fff;
+  outline:none;
+  font-size:14px;
+}
+.input:focus{border-color:rgba(37,99,235,.45); box-shadow:0 0 0 4px rgba(37,99,235,.12)}
+.passrow{display:flex; gap:10px; align-items:center}
+.eye{
+  min-width:46px;
+  height:44px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:#fff;
+  cursor:pointer;
+  font-size:16px;
+}
+.btn{
+  padding:11px 14px;
+  border-radius:14px;
+  border:1px solid var(--border);
+  background:#fff;
+  cursor:pointer;
+  font-weight:900;
+}
+.btn.primary{
+  margin-top:14px;
+  width:100%;
+  border-color: rgba(37,99,235,.25);
+  background: linear-gradient(180deg, rgba(37,99,235,.95), rgba(29,78,216,.95));
+  color:#fff;
+}
+.btn.danger{border-color:rgba(220,38,38,.25); color:rgba(127,29,29,.95); background:rgba(220,38,38,.06)}
+.alert{
+  margin-top:10px;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid rgba(220,38,38,.25);
+  background:rgba(220,38,38,.08);
+  color:rgba(127,29,29,.95);
+  font-weight:900;
+}
+.hint{margin-top:12px; color:var(--muted); font-size:12px}
+.mono{font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono","Courier New", monospace;}
+
+/* App layout */
+.app{min-height:100%}
+.topbar{
+  position:fixed; inset:0 0 auto 0;
+  height:64px;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:10px 14px;
+  background: rgba(255,255,255,.88);
+  border-bottom:1px solid var(--border);
+  backdrop-filter: blur(8px);
+  z-index:2000;
+}
+.topbar-left{display:flex; gap:12px; align-items:center; text-decoration:none; color:inherit}
+.top-logo{width:38px;height:38px; object-fit:contain}
+.top-title{font-weight:950}
+.top-sub{font-size:12px; color:var(--muted); font-weight:900}
+.topbar-center{display:flex; gap:10px; align-items:center; flex-wrap:wrap; justify-content:center}
+.topbar-right{display:flex; gap:10px; align-items:center}
+.pill{
+  padding:8px 10px;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,.8);
+  font-weight:900;
+  font-size:12px;
+}
+.weather-pill{max-width:520px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.shell{display:flex; width:100%; max-width:1320px; margin:0 auto; padding-top:64px; min-height:calc(100vh - 64px);}
+.sidebar{
+  width:240px;
+  padding:14px;
+  position:sticky;
+  top:64px;
+  align-self:flex-start;
+  height:calc(100vh - 64px);
+}
+.navbtn{
+  width:100%;
+  text-align:left;
+  padding:10px 12px;
+  border-radius:14px;
+  border:1px solid rgba(2,6,23,.08);
+  background:rgba(255,255,255,.75);
+  cursor:pointer;
+  font-weight:950;
+  margin-bottom:10px;
+}
+.navbtn.active{border-color:rgba(37,99,235,.25); box-shadow:0 0 0 4px rgba(37,99,235,.10)}
+.main{flex:1; padding:18px 14px 28px}
+.card{
+  background:rgba(255,255,255,.92);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:16px;
+  box-shadow: 0 18px 48px rgba(2,6,23,.10);
+}
+.pagehead{display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:10px}
+.pagehead-actions{display:flex; gap:8px; align-items:center}
+h1{margin:0}
+.grid2{display:grid; grid-template-columns:1.35fr .65fr; gap:12px}
+.grid3{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; margin-top:12px}
+.panel{border:1px solid rgba(2,6,23,.10); border-radius:18px; padding:12px; background:rgba(255,255,255,.86)}
+.panel-head{display:flex; align-items:flex-start; justify-content:space-between; gap:10px; margin-bottom:10px}
+.panel-title{font-weight:950}
+.panel-actions{display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+
+/* Dashboard: pesquisa rápida em 2 colunas exatamente iguais */
+#tab-dashboard .quick-grid{ grid-template-columns: 1fr 1fr !important; }
+
+/* Small buttons for dense toolbars */
+.btn.btn-sm{padding:6px 8px; font-size:11px; border-radius:12px}
+.map-wrap{border:1px solid rgba(2,6,23,.10); border-radius:18px; overflow:hidden}
+.map{height:460px}
+.legend{display:flex; gap:14px; margin-top:10px; flex-wrap:wrap}
+
+/* Dashboard: libertar espaço vertical para o mapa */
+#tab-dashboard .legend{ margin-top:6px; }
+.dot{display:inline-block;width:10px;height:10px;border-radius:999px;margin-right:6px;border:1px solid rgba(2,6,23,.10)}
+.dot.g{background:#22c55e}.dot.y{background:#facc15}.dot.o{background:#fb923c}.dot.r{background:#ef4444}
+.toolbar{display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin:10px 0}
+.tablewrap{overflow:auto; border:1px solid rgba(2,6,23,.08); border-radius:18px; background:rgba(255,255,255,.86)}
+.table{width:100%; border-collapse:separate; border-spacing:0}
+.table th,.table td{padding:10px 10px; border-bottom:1px solid rgba(2,6,23,.08); font-size:13px; vertical-align:top}
+.table th{position:sticky; top:0; background:rgba(255,255,255,.92); z-index:1; text-align:left}
+.table tr:last-child td{border-bottom:none}
+
+/* Ferramentas: uma única página, tudo visível em grelha compacta */
+.tools-grid{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px;}
+.tool-card{padding:10px;}
+.tool-card .panel-head{margin-bottom:8px;}
+.tool-card canvas{max-height:170px;}
+.tool-table{max-height:160px; overflow:auto;}
+
+@media (max-width: 1200px){
+  .tools-grid{grid-template-columns:repeat(2, minmax(0,1fr));}
+}
+@media (max-width: 820px){
+  .tools-grid{grid-template-columns:1fr;}
+}
+
+/* Dashboard: tornar a tabela (Timestamp/Nivel/Caudal) mais compacta para reduzir scroll */
+.dash-panel{ margin-top: 12px; }
+.dash-series{ max-height: 220px; overflow: auto; }
+.dash-series .table th,.dash-series .table td{ padding: 6px 8px; font-size: 12px; }
+.dash-series .table th{ position: sticky; top: 0; background: #fff; z-index: 2; }
+.dash-minmax .table th,.dash-minmax .table td{ padding: 8px 8px; font-size: 12px; }
+
+/* Historico de Dados: números grandes nas tabelas */
+#tblHist th, #tblHist td{
+  font-size:19px !important;
+  font-weight:900;
+}
+
+.quicklist{display:flex; flex-direction:column; gap:8px; margin-top:10px}
+.quickitem{padding:10px; border:1px solid rgba(2,6,23,.08); border-radius:14px; background:rgba(255,255,255,.82); cursor:pointer}
+.quickitem:hover{border-color:rgba(37,99,235,.25); box-shadow:0 0 0 4px rgba(37,99,235,.08)}
+.layers{margin-bottom:10px; padding:10px; border:1px solid rgba(2,6,23,.08); border-radius:14px; background:rgba(255,255,255,.92)}
+.layers-title{font-weight:950; margin-bottom:8px}
+.layers-row{display:flex; gap:14px; font-weight:950; font-size:13px}
+.weather-city{display:flex; gap:8px; align-items:center; justify-content:center; flex-wrap:wrap; margin-bottom:10px}
+.weather-city .input{min-width:0; flex:1 1 auto}
+.weather-city .btn{padding:6px 10px}
+.weather7{display:grid; grid-template-columns:repeat(7, minmax(0,1fr)); gap:8px}
+.day{border:1px solid rgba(2,6,23,.08); border-radius:14px; padding:10px; background:rgba(255,255,255,.86)}
+.day .d{font-weight:950}
+.day .m{font-size:12px; font-weight:900; color:var(--muted); margin-top:4px}
+.mini{margin-top:12px; border:1px solid rgba(2,6,23,.08); border-radius:14px; padding:10px; background:rgba(255,255,255,.86)}
+.mini-title{font-weight:950; margin-bottom:6px}
+.mini-row{display:flex; justify-content:space-between; font-weight:900; font-size:12px; color:rgba(15,23,42,.8); padding:4px 0}
+.chips{display:flex; flex-wrap:wrap; gap:8px}
+.chip{display:flex; gap:8px; align-items:center; padding:8px 10px; border-radius:999px; border:1px solid rgba(2,6,23,.08); background:rgba(255,255,255,.86); font-weight:950; font-size:12px}
+.chip button{margin:0; padding:6px 10px; border-radius:999px}
+.chk{display:flex; gap:8px; align-items:center; font-weight:900; font-size:13px; color:rgba(15,23,42,.82); margin-top:8px}
+/* Modal */
+.modal{position:fixed; inset:0; background:rgba(2,6,23,.45); display:flex; align-items:center; justify-content:center; padding:18px; z-index:10000}
+.modal-card{width:min(860px, 96vw); background:rgba(255,255,255,.96); border:1px solid rgba(2,6,23,.12); border-radius:22px; box-shadow:0 28px 80px rgba(2,6,23,.25); overflow:hidden}
+.modal-head{display:flex; align-items:center; justify-content:space-between; gap:12px; padding:12px; border-bottom:1px solid rgba(2,6,23,.10)}
+.modal-title{font-weight:950}
+.modal-body{padding:12px}
+/* Fullscreen map fallback */
+.map-fullscreen{position:fixed !important; inset:0 !important; width:100vw !important; height:100vh !important; z-index:9999 !important; border-radius:0 !important}
+.map-fullscreen .map{height:100vh !important}
+/* Markers */
+/* Leaflet controls the outer icon box (iconSize). Keep our square 100% inside that box. */
+.mkr{
+  position:relative;
+  width:100%;
+  height:100%;
+  box-sizing:border-box;
+  border-radius:10px;
+  border:1px solid rgba(2,6,23,.20);
+  display:flex;
+  align-items:stretch;
+  justify-content:stretch;
+  padding:clamp(1px, calc(var(--mkrPx, 72px) * 0.035), 6px);
+  background:#fff;
+  box-shadow:0 10px 22px rgba(2,6,23,.18);
+  overflow:hidden; /* keep all info INSIDE the square */
+  --mkrScale: 1;
+}
+.mkr.dl{background:rgba(37,99,235,.14)}
+.mkr.c{background:rgba(239,68,68,.14)}
+.mkr .mkrTop{display:none}
+.mkr .mkrName{
+  font-size:clamp(9px, calc(var(--mkrPx, 72px) * 0.14), 13px);
+  font-weight:900;
+  color:#0f172a;
+  background:rgba(255,255,255,.96);
+  padding:clamp(1px, calc(var(--mkrPx, 72px) * 0.018), 3px) clamp(2px, calc(var(--mkrPx, 72px) * 0.05), 6px);
+  border-radius:999px;
+  border:1px solid rgba(2,6,23,.10);
+  white-space:nowrap;
+  max-width: 100%;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  line-height:1.05;
+}
+.mkr .lvl{
+  position:static;
+  transform:none;
+  font-size:clamp(11px, calc(var(--mkrPx, 72px) * 0.22), 18px);
+  font-weight:950;
+  color:#0f172a;
+  background:rgba(255,255,255,.96);
+  padding:clamp(1px, calc(var(--mkrPx, 72px) * 0.02), 3px) clamp(3px, calc(var(--mkrPx, 72px) * 0.05), 7px);
+  border-radius:8px;
+  border:1px solid rgba(2,6,23,.14);
+  z-index:2;
+  line-height:1;
+}
+.mkr .q{
+  position:static;
+  transform:none;
+  font-size:clamp(9px, calc(var(--mkrPx, 72px) * 0.16), 13px);
+  font-weight:900;
+  color:#0f172a;
+  background:rgba(255,255,255,.96);
+  padding:clamp(1px, calc(var(--mkrPx, 72px) * 0.018), 3px) clamp(2px, calc(var(--mkrPx, 72px) * 0.05), 6px);
+  border-radius:8px;
+  border:1px solid rgba(2,6,23,.14);
+  white-space:nowrap;
+  z-index:2;
+  line-height:1.05;
+}
+.mkr .q{max-width:100%; overflow:hidden; text-overflow:ellipsis;}
+.mkr.g{outline:3px solid rgba(34,197,94,.45)}
+.mkr.y{outline:3px solid rgba(250,204,21,.45)}
+.mkr.o{outline:3px solid rgba(251,146,60,.45)}
+.mkr.r{outline:3px solid rgba(239,68,68,.45)}
+
+@media (max-width: 1080px){
+  .shell{flex-direction:column}
+  .sidebar{width:auto; height:auto; position:relative; top:0; display:flex; gap:10px; overflow:auto}
+  .navbtn{white-space:nowrap; margin-bottom:0}
+  /* Keep dashboard side-by-side longer so meteorologia stays visible */
+  /* Dashboard: manter mapa (esquerda) dominante e meteorologia (direita) mais estreita */
+  .grid2{grid-template-columns:1.25fr 0.75fr}
+  .grid3{grid-template-columns:1fr}
+  .map{height:380px}
+  .weather7{grid-template-columns:repeat(4, minmax(0,1fr))}
+}
+
+@media (max-width: 820px){
+  .grid2{grid-template-columns:1fr}
+}
+
+/* Dashboard: manter meteorologia à direita do mapa em ecrãs médios (só empilha em mobile muito estreito) */
+@media (max-width: 820px){
+  #tab-dashboard .grid2{ grid-template-columns: 1.35fr 0.65fr !important; }
+}
+/* Só empilhar em mobile muito estreito; manter meteorologia à direita na maioria dos ecrãs */
+@media (max-width: 420px){
+  #tab-dashboard .grid2{ grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 820px){
+  #tab-dashboard .quick-grid{ grid-template-columns: 1fr !important; }
+}
+
+
+/* v31 fixes */
+/* 1) Weather 7d layout: avoid text overlap */
+.weather7{
+  grid-template-columns: repeat(7, minmax(120px, 1fr));
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+.day{min-width:120px}
+.day .d{font-size:12px; line-height:1.2; white-space:normal}
+.day .m{line-height:1.25; white-space:normal}
+
+/* 2) Fullscreen map: ensure map fills screen */
+#mapWrap:fullscreen,
+#mapWrap.map-fullscreen{
+  width:100vw !important;
+  height:100vh !important;
+  max-width:none !important;
+  max-height:none !important;
+}
+#mapWrap:fullscreen #map,
+#mapWrap.map-fullscreen #map{
+  width:100% !important;
+  height:100% !important;
+}
+#mapWrap:fullscreen .map,
+#mapWrap.map-fullscreen .map{
+  width:100% !important;
+  height:100% !important;
+}
+
+/* 5) Modal sizing: keep header visible and allow scroll */
+.modal-card{
+  max-height: calc(100vh - 40px);
+}
+.modal-body{
+  max-height: calc(100vh - 140px);
+  overflow:auto;
+}
+
+
+/* PATCH29: Dashboard split layout (flex) to guarantee meteorologia à direita */
+#tab-dashboard .dash-split{
+  display:flex;
+  gap:12px;
+  align-items:stretch;
+}
+#tab-dashboard .dash-split > .panel{
+  min-width:0;
+}
+#tab-dashboard .dash-split > .panel:first-child{
+  flex:1 1 auto;
+}
+#tab-dashboard .dash-split > .panel:last-child{
+  /* meteorologia mais estreita, para privilegiar o mapa */
+  flex:0 0 220px;
+  max-width:240px;
+  /* nunca cortar texto: em coluna estreita deve quebrar */
+  overflow:visible;
+}
+@media (max-width: 420px){
+  #tab-dashboard .dash-split{
+    flex-direction:column;
+  }
+  #tab-dashboard .dash-split > .panel:last-child{
+    flex:1 1 auto;
+    max-width:none;
+  }
+}
+
+
+/* PATCH34: fazer o mapa ocupar o espaço vertical disponível (evita área vazia abaixo do mapa quando a meteorologia é mais alta) */
+#tab-dashboard .dash-split > .panel.tool-card{
+  display:flex;
+  flex-direction:column;
+}
+#tab-dashboard .dash-split > .panel.tool-card .map-wrap{
+  flex:1 1 auto;
+  display:flex;
+}
+#tab-dashboard .dash-split > .panel.tool-card .map{
+  height:100% !important;
+  min-height:520px;
+}
+#tab-dashboard .dash-split > .panel.tool-card .legend{
+  margin-top:6px;
+}
+/* Dashboard: mapa dominante à esquerda e meteorologia estreita à direita (sempre em 2 colunas) */
+#tab-dashboard .grid2{
+  grid-template-columns: 1.60fr 0.40fr !important;
+}
+
+/* Dashboard: altura do mapa é controlada por flex (ver PATCH34) */
+#tab-dashboard .map{height:100% !important;}
+
+/* PATCH34: fazer o mapa ocupar o espaço vertical disponível (evita área vazia abaixo do mapa quando a meteorologia é mais alta) */
+#tab-dashboard #dashSplit > .panel.tool-card{
+  display:flex;
+  flex-direction:column;
+}
+#tab-dashboard #dashSplit > .panel.tool-card .panel-head,
+#tab-dashboard #dashSplit > .panel.tool-card #layersPanel,
+#tab-dashboard #dashSplit > .panel.tool-card .legend{
+  flex:0 0 auto;
+}
+#tab-dashboard #mapWrap{
+  flex:1 1 auto;
+  display:flex;
+}
+#tab-dashboard #map{
+  height:460px !important;
+  width:100% !important;
+  flex:1 1 auto;
+}
+
+/* Ensure iframe fallback fills the whole map area */
+#tab-dashboard #map.map-iframe-fallback iframe{
+  border:0;
+  width:100%;
+  height:100%;
+  display:block;
+}
+
+
+/* PATCH30: Cabeçalho do painel do mapa em duas linhas, tudo dentro das margens */
+#tab-dashboard .panel.tool-card .panel-head{
+  flex-direction:column;
+  align-items:stretch;
+  gap:8px;
+}
+#tab-dashboard .panel.tool-card .panel-head > div:first-child{
+  width:100%;
+}
+#tab-dashboard .panel.tool-card .panel-actions{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+}
+
+/* Pesquisa rápida (mapa) acima dos botões e centrada nas margens do mapa */
+#tab-dashboard .map-searchrow{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+/* Botões do mapa: todos em linha, compactos e sem sair fora das margens */
+#tab-dashboard .map-tools{
+  width:100%;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:3px;
+  /* Garantir que todos os botões ficam visíveis dentro das margens do mapa */
+  flex-wrap:wrap;
+  overflow:visible;
+  padding-bottom:2px;
+}
+#tab-dashboard .map-tools .btn-sm{
+  font-size:8px;
+  padding:2px 3px;
+  min-width:0;
+  height:22px;
+  line-height:16px;
+  white-space:nowrap;
+}
+
+/* Ajuste específico: texto longo "Exportar GeoJSON" deve caber dentro do botão */
+#btnMapExportGeoJSON{
+  font-size:7.5px !important;
+  padding:2px 2px !important;
+  height:22px !important;
+  line-height:16px !important;
+}
+
+
+/* Em ecrãs mais estreitos, permitir quebra para não sair das margens */
+@media (max-width: 980px){
+  #tab-dashboard .map-tools{ flex-wrap:wrap; overflow:visible; }
+}
+
+
+/* PATCH34: Dashboard meteorologia layout safe (evita texto a sair fora em coluna estreita) */
+#tab-dashboard .weather-city{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
+}
+#tab-dashboard .weather-city label{flex:0 0 auto;}
+#tab-dashboard .weather-city .input{
+  flex:1 1 120px;
+  min-width:0;
+}
+#tab-dashboard .weather-city .btn{flex:0 0 auto;}
+#tab-dashboard .panel:last-child .panel-head{flex-wrap:wrap;}
+#tab-dashboard .panel:last-child .panel-title{word-break:break-word;}
+#tab-dashboard .panel:last-child .muted{word-break:break-word;}
+/* Dashboard: meteorologia em VERTICAL (7 dias em lista), estreita e limpa */
+#tab-dashboard #weather7{
+  display:flex !important;
+  flex-direction:column !important;
+  gap:8px !important;
+  overflow:visible !important;
+  padding-bottom:0 !important;
+}
+
+#tab-dashboard #weather7 .day{
+  display:flex !important;
+  align-items:center !important;
+  justify-content:space-between !important;
+  gap:10px !important;
+  padding:8px 10px !important;
+}
+
+#tab-dashboard #weather7 .day .d{ font-size:12px; min-width:64px; }
+#tab-dashboard #weather7 .day .m{ font-size:11px; margin-top:0 !important; text-align:right; }
+
+/* Evitar texto a sair fora no painel de meteorologia estreito */
+#tab-dashboard .panel:last-child *{box-sizing:border-box;}
+#tab-dashboard .panel:last-child{overflow:visible;}
+#tab-dashboard .panel:last-child .mini,
+#tab-dashboard .panel:last-child .mini-row,
+#tab-dashboard .panel:last-child .muted,
+#tab-dashboard .panel:last-child b,
+#tab-dashboard .panel:last-child span{
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+
+/* Em meteorologia estreita, reduzir a largura mínima do rótulo do dia para evitar "texto fora" */
+#tab-dashboard #weather7 .day .d{ min-width:64px; }
+
+/* A meteorologia na Dashboard deve caber "de uma vez"; reduzir ligeiramente a mini-card */
+#tab-dashboard .mini{ padding:8px 10px; }
+#tab-dashboard .mini-row{ padding:3px 0; }
+
+/* Dashboard: meteorologia em lista vertical (7 dias), legível em coluna estreita */
+#tab-dashboard .weather7{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  overflow:visible;
+  padding-bottom:0;
+}
+#tab-dashboard .weather7 .day{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:8px 10px;
+}
+#tab-dashboard .weather7 .day .d{font-size:12px;}
+#tab-dashboard .weather7 .day .m{font-size:11px; margin-top:0; text-align:right;}
+
+/* Dashboard map toolbar: single horizontal row, compact buttons, consistent sizing */
+.map-tools{display:flex; gap:6px; align-items:center; flex-wrap:nowrap; overflow-x:auto; padding-bottom:2px}
+.map-tools .btn-sm{
+  font-size:10px;
+  padding:3px 6px;
+  min-width:0;
+  height:26px;
+  line-height:20px;
+  white-space:nowrap;
+}
+
+/* (Nota) Se o ecrã for muito estreito, a barra permite scroll horizontal suave em vez de partir o layout */
+
+/* Dashboard quick search: always 50/50 split (DL left, Caudal right) */
+#tab-dashboard .quick-grid{grid-template-columns:1fr 1fr !important;}
+
+/* v32 - Animated pulse for Data Logger markers */
+@keyframes adng_pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(0,0,0,0); transform: scale(1); }
+  70%  { box-shadow: 0 0 0 12px rgba(0,0,0,0); transform: scale(1.02); }
+  100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); transform: scale(1); }
+}
+
+.mkr.dl.g{ animation: adng_pulse 2.2s infinite; box-shadow: 0 0 0 0 rgba(34,197,94,.35); }
+.mkr.dl.y{ animation: adng_pulse 2.0s infinite; box-shadow: 0 0 0 0 rgba(250,204,21,.35); }
+.mkr.dl.o{ animation: adng_pulse 1.8s infinite; box-shadow: 0 0 0 0 rgba(251,146,60,.35); }
+.mkr.dl.r{ animation: adng_pulse 1.5s infinite; box-shadow: 0 0 0 0 rgba(239,68,68,.40); }
+
+/* =====================
+   v33 - Visual theme (azuis/prateados/dourados) + DL color signaling
+   (CSS-only overrides; no logic changes)
+   ===================== */
+
+:root{
+  /* Palette */
+  --adn-blue-900:#0b1f3a;
+  --adn-blue-700:#123a6f;
+  --adn-blue-600:#1e4fa3;
+  --adn-blue-500:#2b6fe8;
+
+  --adn-silver-50:#f7f9fc;
+  --adn-silver-100:#eef2f7;
+  --adn-silver-200:#e4e9f1;
+  --adn-silver-300:#d3dbe8;
+
+  --adn-gold-600:#c8a24a;
+  --adn-gold-500:#d6b25b;
+  --adn-gold-400:#e3c77c;
+
+  --adn-ink:#0f172a;
+}
+
+/* Background & cards: cooler silver */
+body{
+  background:
+    radial-gradient(1200px 700px at 20% 10%, rgba(43,111,232,.14), transparent 55%),
+    radial-gradient(900px 600px at 78% 18%, rgba(214,178,91,.12), transparent 55%),
+    linear-gradient(180deg, var(--adn-silver-50), var(--adn-silver-100));
+}
+
+.card, .panel, .login-card{
+  border-color: rgba(18,58,111,.14) !important;
+}
+
+/* Topbar: blue/silver with visible gold accents */
+.topbar{
+  background: linear-gradient(180deg, rgba(247,249,252,.92), rgba(238,242,247,.88)) !important;
+  border-bottom: 1px solid rgba(18,58,111,.18) !important;
+}
+.top-title{ color: var(--adn-blue-900) !important; letter-spacing:.2px; }
+.top-sub{ color: rgba(11,31,58,.62) !important; }
+
+/* Pills: silver base + gold highlight on important ones */
+.pill{
+  background: linear-gradient(180deg, rgba(255,255,255,.86), rgba(238,242,247,.92)) !important;
+  border-color: rgba(18,58,111,.18) !important;
+  color: rgba(11,31,58,.90) !important;
+}
+.weather-pill{
+  border-color: rgba(200,162,74,.30) !important;
+  box-shadow: 0 0 0 3px rgba(200,162,74,.10);
+}
+#nowClock{
+  border-color: rgba(43,111,232,.28) !important;
+  box-shadow: 0 0 0 3px rgba(43,111,232,.10);
+}
+/* Online pill: visible gold */
+.topbar-right .pill{
+  border-color: rgba(214,178,91,.42) !important;
+  box-shadow: 0 0 0 3px rgba(214,178,91,.14);
+}
+
+/* Sidebar tabs: blue base; active is gold + blue */
+.sidebar .navbtn{
+  background: linear-gradient(180deg, rgba(255,255,255,.80), rgba(238,242,247,.92)) !important;
+  border-color: rgba(18,58,111,.16) !important;
+  color: rgba(11,31,58,.92) !important;
+}
+.sidebar .navbtn:hover{
+  border-color: rgba(43,111,232,.30) !important;
+  box-shadow: 0 0 0 4px rgba(43,111,232,.10);
+}
+.sidebar .navbtn.active{
+  background: linear-gradient(180deg, rgba(214,178,91,.30), rgba(255,255,255,.92)) !important;
+  border-color: rgba(200,162,74,.55) !important;
+  box-shadow: 0 0 0 4px rgba(200,162,74,.16) !important;
+}
+
+/* Buttons: primary blue; subtle gold hover */
+.btn{
+  border-color: rgba(18,58,111,.18) !important;
+}
+.btn.primary{
+  background: linear-gradient(180deg, rgba(43,111,232,.98), rgba(18,58,111,.98)) !important;
+}
+.btn:hover{
+  box-shadow: 0 0 0 4px rgba(214,178,91,.12);
+}
+
+/* Inputs: silver + blue focus + gold accent */
+.input{
+  border-color: rgba(18,58,111,.16) !important;
+  background: rgba(255,255,255,.92) !important;
+}
+.input:focus{
+  border-color: rgba(43,111,232,.45) !important;
+  box-shadow: 0 0 0 4px rgba(214,178,91,.12), 0 0 0 7px rgba(43,111,232,.08) !important;
+}
+
+/* Weather list: add gold left accent */
+#weather7 .day{
+  border-color: rgba(18,58,111,.14) !important;
+  background: linear-gradient(90deg, rgba(214,178,91,.18), rgba(255,255,255,.92) 28%, rgba(238,242,247,.92)) !important;
+}
+
+/* Tables: blue header line */
+.table th{
+  border-bottom: 1px solid rgba(18,58,111,.18) !important;
+}
+
+/* === Data Logger color signaling (not just outline/pulse) ===
+   Make the status color highly visible on DL markers:
+   - colored ring + subtle fill tint
+*/
+.mkr.dl.g{
+  background: linear-gradient(180deg, rgba(34,197,94,.20), rgba(255,255,255,.92)) !important;
+  outline: 4px solid rgba(34,197,94,.55) !important;
+}
+.mkr.dl.y{
+  background: linear-gradient(180deg, rgba(250,204,21,.26), rgba(255,255,255,.92)) !important;
+  outline: 4px solid rgba(250,204,21,.60) !important;
+}
+.mkr.dl.o{
+  background: linear-gradient(180deg, rgba(251,146,60,.28), rgba(255,255,255,.92)) !important;
+  outline: 4px solid rgba(251,146,60,.62) !important;
+}
+.mkr.dl.r{
+  background: linear-gradient(180deg, rgba(239,68,68,.26), rgba(255,255,255,.92)) !important;
+  outline: 4px solid rgba(239,68,68,.66) !important;
+}
+
+/* Keep Caudalímetros more neutral, but still readable */
+.mkr.c.g{ outline: 3px solid rgba(34,197,94,.35) !important; }
+.mkr.c.y{ outline: 3px solid rgba(250,204,21,.40) !important; }
+.mkr.c.o{ outline: 3px solid rgba(251,146,60,.42) !important; }
+.mkr.c.r{ outline: 3px solid rgba(239,68,68,.46) !important; }
+
+/* Legend colors slightly richer */
+.dot.g{ background:#22c55e !important; }
+.dot.y{ background:#facc15 !important; }
+.dot.o{ background:#fb923c !important; }
+.dot.r{ background:#ef4444 !important; }
+
+/* =====================
+   v33-patch: requested changes only
+   ===================== */
+
+/* Map filters UI */
+.map-filters{
+  display:flex; gap:10px; align-items:center;
+  padding:6px 10px;
+  border-radius:999px;
+  border:1px solid rgba(2,6,23,.10);
+  background:rgba(255,255,255,.85);
+}
+.map-filters .mf{
+  display:flex; gap:8px; align-items:center;
+  font-weight:900; font-size:12px; color:rgba(15,23,42,.85);
+  margin:0;
+}
+.map-filters input{ accent-color: #d6b25b; }
+
+/* Marker device image */
+.mkr .devimg{
+  /* scales naturally with square size */
+  width:clamp(12px, 38%, 34px);
+  height:clamp(12px, 38%, 34px);
+  object-fit:contain;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,.25));
+  position:relative;
+  z-index:1;
+}
+
+/* Ensure Data Logger color pulse animation is visible */
+@keyframes adng_pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(0,0,0,0); transform: scale(1); }
+  70%  { box-shadow: 0 0 0 12px rgba(0,0,0,0); transform: scale(1.02); }
+  100% { box-shadow: 0 0 0 0 rgba(0,0,0,0); transform: scale(1); }
+}
+.mkr.dl.g{ animation: adng_pulse 2.2s infinite !important; }
+.mkr.dl.y{ animation: adng_pulse 2.0s infinite !important; }
+.mkr.dl.o{ animation: adng_pulse 1.8s infinite !important; }
+.mkr.dl.r{ animation: adng_pulse 1.5s infinite !important; }
+
+/* Marker inner layout wrapper: 3 rows always visible and fitted */
+.mkr .mkri{
+  width:100%;
+  height:100%;
+  display:grid;
+  grid-template-rows: auto 1fr auto;
+  align-items:center;
+  justify-items:center;
+  gap:clamp(1px, calc(var(--mkrPx, 72px) * 0.03), 6px);
+}
+
+/* v38 - Larger logo */
+#logo, .logo img{
+  height: 52px !important;
+  width: auto !important;
+}
+@media (max-width: 900px){
+  #logo, .logo img{ height: 44px !important; }
+}
+
+/* v38 - Dashboard map action buttons aligned */
+#tab-dashboard .panel-actions{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:flex-end;
+  gap:10px;
+}
+#tab-dashboard .panel-actions .btn,
+#tab-dashboard .panel-actions select,
+#tab-dashboard .panel-actions .map-filters{
+  height: 38px;
+}
+#tab-dashboard .panel-actions .btn{
+  min-width: 140px;
+  padding: 0 12px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  border-radius: 10px;
+}
+#tab-dashboard .panel-actions .map-filters{
+  padding: 0 12px;
+}
+
+/* Dashboard map tool buttons (Heatmap/GeoJSON/Camadas/Ecrã completo/Ajustar/KML)
+   Requested: horizontal row, compact, same size, clean layout.
+*/
+#tab-dashboard .panel-actions .map-tools{
+  display:flex;
+  flex-direction:row;
+  gap:6px;
+  align-items:center;
+  flex-wrap:nowrap;
+  justify-content:center;
+  width:100%;
+}
+#tab-dashboard .panel-actions .map-tools .btn{
+  min-width: 92px;
+  width:92px;
+  height: 28px;
+  font-size: 10px;
+  padding: 0 6px;
+}
+
+/* Keep tools on one line; shrink handled above. */
+#tab-dashboard .panel-actions .map-tools{ flex-wrap:nowrap !important; }
+
+/* Dashboard map search */
+#tab-dashboard .panel-actions .map-search{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+#tab-dashboard .panel-actions .map-search .input{
+  width: 280px;
+  height: 38px;
+}
+#tab-dashboard .panel-actions .map-search .btn{
+  min-width: 44px;
+  width: 44px;
+  padding: 0;
+}
+
+/* v41 - Smooth blinking for MAP squares (requested)
+   Blink the whole square using the warning colors.
+*/
+@keyframes adng_square_blink {
+  0%   { box-shadow: 0 10px 22px rgba(2,6,23,.18), 0 0 0 0 rgba(var(--blinkRGB, 250,204,21), var(--blinkA, .35)); filter:saturate(1); }
+  50%  { box-shadow: 0 10px 22px rgba(2,6,23,.18), 0 0 0 var(--blinkSpread, 10px) rgba(var(--blinkRGB, 250,204,21), 0); filter:saturate(1.18); }
+  100% { box-shadow: 0 10px 22px rgba(2,6,23,.18), 0 0 0 0 rgba(var(--blinkRGB, 250,204,21), calc(var(--blinkA, .35) * .82)); filter:saturate(1); }
+}
+
+/* Blink ONLY Data Logger squares from yellow upwards (y/o/r).
+   Different intensity per color: yellow (soft), orange (medium), red (strong).
+*/
+.mkr.dl.y, .mkr.dl.o, .mkr.dl.r{
+  animation: adng_square_blink var(--blinkDur, 1.8s) infinite;
+}
+.mkr.dl.y{ --blinkRGB: 250,204,21; --blinkDur: 2.6s; --blinkA: .28; --blinkSpread: 7px; }
+.mkr.dl.o{ --blinkRGB: 251,146,60; --blinkDur: 1.9s; --blinkA: .38; --blinkSpread: 10px; }
+.mkr.dl.r{ --blinkRGB: 239,68,68; --blinkDur: 1.35s; --blinkA: .50; --blinkSpread: 13px; }
+
+/* Default: inner chips do not blink (except Data Logger lvl in y/o/r below) */
+.mkr .lvl, .mkr .q, .mkr .mkrName{ animation: none !important; }
+
+/* Blink the LEVEL badge for Data Loggers in y/o/r with same intensity mapping */
+@keyframes adng_lvl_blink {
+  0%   { filter: brightness(1); transform: translateZ(0) scale(1); }
+  50%  { filter: brightness(var(--lvlBright, 1.05)); transform: translateZ(0) scale(var(--lvlScale, 1.02)); }
+  100% { filter: brightness(1); transform: translateZ(0) scale(1); }
+}
+.mkr.dl.y .lvl{ animation: adng_lvl_blink var(--blinkDur, 2.6s) infinite !important; --lvlBright: 1.06; --lvlScale: 1.02; }
+.mkr.dl.o .lvl{ animation: adng_lvl_blink var(--blinkDur, 1.9s) infinite !important; --lvlBright: 1.10; --lvlScale: 1.035; }
+.mkr.dl.r .lvl{ animation: adng_lvl_blink var(--blinkDur, 1.35s) infinite !important; --lvlBright: 1.16; --lvlScale: 1.05; }
+
+/* v42 - Colored percentage badge (lvl) for better readability */
+.mkr .lvl{
+  font-weight: 950;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,.18);
+  color: #0b1220;
+}
+
+/* Data Logger badge colors */
+.mkr.dl.g .lvl{ background: rgba(34,197,94,.85); border-color: rgba(34,197,94,1); color:#06210f; }
+.mkr.dl.y .lvl{ background: rgba(250,204,21,.92); border-color: rgba(250,204,21,1); color:#2a1f00; }
+.mkr.dl.o .lvl{ background: rgba(251,146,60,.92); border-color: rgba(251,146,60,1); color:#2b1204; }
+.mkr.dl.r .lvl{ background: rgba(239,68,68,.92); border-color: rgba(239,68,68,1); color:#2b0909; }
+
+/* Caudalímetros badge colors (same logic) */
+.mkr.c.g .lvl{ background: rgba(34,197,94,.75); border-color: rgba(34,197,94,1); color:#06210f; }
+.mkr.c.y .lvl{ background: rgba(250,204,21,.82); border-color: rgba(250,204,21,1); color:#2a1f00; }
+.mkr.c.o .lvl{ background: rgba(251,146,60,.82); border-color: rgba(251,146,60,1); color:#2b1204; }
+.mkr.c.r .lvl{ background: rgba(239,68,68,.82); border-color: rgba(239,68,68,1); color:#2b0909; }
+
+/* Keep marker content crisp; Leaflet already handles zoom via iconSize */
+.mkr .mkri{ transform: none !important; }
+
+/* v45 - weather data source attribution */
+.weather-source{
+  margin-top:10px;
+  line-height:1.35;
+}
+.weather-source a{ color: inherit; text-decoration: underline; }
+
+/* v47 - dialogs */
+.dlg{
+  border: none;
+  border-radius: 14px;
+  padding: 0;
+  width: min(640px, 94vw);
+  box-shadow: 0 18px 60px rgba(0,0,0,.25);
+}
+.dlg::backdrop{ background: rgba(0,0,0,.35); }
+.dlg-head{
+  display:flex; justify-content:space-between; align-items:center;
+  padding: 14px 16px;
+  border-bottom: 1px solid rgba(0,0,0,.10);
+}
+.dlg-title{ font-weight: 950; }
+.dlg-body{ padding: 14px 16px; }
+
+/* v49 background (soft) */
+body{
+  background-image: linear-gradient(rgba(7,12,22,.58), rgba(7,12,22,.58)), url("bg-adngest.jpg");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+}
+
+/* v51 tab width consistency */
+.tab{ width:100%; box-sizing:border-box; }
+
+/* v52 width fix: keep all tabs same width */
+.main{ overflow-x:hidden; }
+.card.tab{ width:100%; max-width:100%; box-sizing:border-box; }
+#tab-historico{ width:100%; max-width:100%; box-sizing:border-box; }
+#tab-historico .tablewrap{ max-width:100%; overflow-x:auto; }
+
+canvas{ width:100%; display:block; }
+
+/* v53 subtabs + hidrogramas */
+.subtabs{
+  display:flex; gap:10px; margin:10px 0 12px 0; flex-wrap:wrap;
+}
+.subtab{
+  padding:8px 12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.18);
+  background: rgba(255,255,255,.08);
+  color: inherit;
+  cursor:pointer;
+}
+.subtab.active{
+  background: rgba(37,99,235,.22);
+  border-color: rgba(37,99,235,.35);
+}
+.hidro-panel{ margin-top:12px; }
+.hidro-list{ display:flex; flex-direction:column; gap:12px; }
+.hidro-item{
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:14px;
+  padding:12px;
+  background: rgba(0,0,0,.10);
+}
+.hidro-item-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap; }
+.hidro-item-title{ font-weight:900; }
+.hidro-item-meta{ display:flex; gap:14px; flex-wrap:wrap; }
+.hydro-kpi{ font-size:12px; opacity:.85; }
+.hidro-canvas{ width:100%; display:block; margin-top:10px; }
+
+/* v54 - keep histórico chart compact */
+#histChart{ max-height: 220px; }
+#tab-historico .panel{ max-width: 100%; }
+
+#tab-historico canvas{ max-width:100%; }
+
+#tab-historico .tablewrap{max-width:100%;}
+
+/* v66 - Histórico: tabelas com números maiores (legibilidade) */
+#tblHist{ font-size: 14px; }
+#tblHist th{ font-size: 14px; font-weight: 800; }
+#tblHist td{ font-size: 14px; }
+
+/* v55 hist chart compact */
+#histChart{ height:180px !important; max-height:180px !important; }
+
+/* v55 fix: compact historico chart */
+#histChart{height:180px !important; max-height:180px !important;}
+
+/* Ajuste para baixar ligeiramente a janela de login */
+#login, .login, .login-container{
+  margin-top: 60px;
+}
+
+/* v61 login offset */
+.login-page{ padding-top: 40px; }
+.login-page .login-card{ margin-top: 110px; }
+
+.noaa-pill{max-width:340px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Online users (admin) */
+.onlineList{ padding: 10px 12px; }
+.onlineItem{ display:flex; gap:10px; align-items:flex-start; padding: 8px 0; border-bottom:1px solid rgba(0,0,0,.06); }
+.onlineItem:last-child{ border-bottom:0; }
+.dot{ width:10px; height:10px; border-radius:50%; display:inline-block; margin-top: 4px; }
+.dot.online{ background: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.18); }
+
+
+.dash-chart-legend{margin-top:6px;font-size:13px}
+.swatch{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px;vertical-align:middle}
+
+/* Compact mode (mobile-friendly) */
+body.compact .sidebar{width:180px}
+body.compact .panel{padding:12px}
+body.compact .kpi{padding:12px}
+body.compact .table td, body.compact .table th{padding:8px 8px}
+body.compact .topbar{padding:10px 12px}
+body.compact .top-title{font-size:14px}
+.chart-html-legend{list-style:none;padding:0;margin:0;display:flex;gap:12px;flex-wrap:wrap}
+.chart-html-legend li{display:flex;align-items:center;gap:6px}
+.chart-html-legend .box{width:12px;height:12px;display:inline-block}
+
+.hr{height:1px;background:rgba(148,163,184,.35);margin:12px 0}
+
+
+.app-footer{
+  position:fixed;
+  left:0;
+  right:0;
+  bottom:0;
+  padding:8px 12px;
+  font: 12px system-ui, -apple-system, Segoe UI, Roboto;
+  color: rgba(2,6,23,.65);
+  text-align:center;
+  background: rgba(243,246,251,.85);
+  backdrop-filter: blur(4px);
+  border-top: 1px solid rgba(15,23,42,.08);
+  z-index: 9999;
+}
+
+/* PATCH34: weather city row wrap (coluna estreita sem letras a sair fora) */
+#tab-dashboard .weather-city{display:flex; align-items:center; gap:6px; flex-wrap:wrap;}
+#tab-dashboard .weather-city label{flex:0 0 auto;}
+#tab-dashboard .weather-city .input{flex:1 1 110px; min-width:0;}
+#tab-dashboard .weather-city .btn{flex:0 0 auto;}
+#tab-dashboard .panel .muted, #tab-dashboard .panel .small{word-break:break-word;}
+
+
+/* PATCH34: meteorologia — evitar letras fora e manter pesquisa centrada em coluna estreita */
+#tab-dashboard .weather-city{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  align-items:center;
+}
+#tab-dashboard .weather-city label{
+  flex:0 0 auto;
+}
+#tab-dashboard .weather-city .input{
+  flex:1 1 120px;
+  min-width:0;
+}
+#tab-dashboard .weather-city .btn{
+  flex:0 0 auto;
+}
+#tab-dashboard .panel:last-child .panel-title,
+#tab-dashboard .panel:last-child .muted{
+  word-break:break-word;
+}
+
+
+/* PATCH34: meteorologia - evitar letras fora e manter pesquisa centrada */
+#tab-dashboard .weather-city{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  align-items:center;
+  justify-content:center;
+}
+#tab-dashboard .weather-city label{flex:0 0 auto;}
+#tab-dashboard .weather-city .input{
+  flex:1 1 120px;
+  min-width:0;
+}
+#tab-dashboard .weather-city .btn{
+  flex:0 0 auto;
+  padding:6px 8px;
+}
+#tab-dashboard .panel:last-child .panel-title{
+  font-size:14px;
+}
+#tab-dashboard .panel:last-child .muted.small{
+  word-break:break-word;
+}
+
+
+/* Fallback when Leaflet CDN is unavailable */
+.map-iframe-fallback iframe{
+  border:0;
+  width:100%;
+  height:100%;
+  display:block;
+}
